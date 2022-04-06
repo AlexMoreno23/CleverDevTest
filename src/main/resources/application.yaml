@@ -1,7 +1,7 @@
 spring:
  jpa:
   hibernate:
-   ddl-auto: create-drop
+   ddl-auto: update
   database-platform: org.hibernate.dialect.H2Dialect
   show-sql: false
 
@@ -13,3 +13,11 @@ spring:
   driver-class-name: org.h2.Driver
   username: sa
   password:
+
+server:
+  error:
+    include-binding-errors: always
+    include-message: always
+
+base:
+ path: ''

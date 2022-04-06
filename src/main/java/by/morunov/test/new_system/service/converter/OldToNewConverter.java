@@ -1,13 +1,14 @@
 package by.morunov.test.new_system.service.converter;
 
-import by.morunov.test.new_system.entity.ClientStatusEnum;
+
 import by.morunov.test.new_system.entity.PatientProfile;
 import by.morunov.test.new_system.entity.User;
 import by.morunov.test.new_system.entity.Note;
 import by.morunov.test.new_system.repo.PatientRepo;
 import by.morunov.test.new_system.repo.UserRepo;
-import by.morunov.test.old_system.clients.dto.OldClientDto;
-import by.morunov.test.old_system.note.dto.OldClientNoteDto;
+import by.morunov.test.old_system.client.dto.ClientDto;
+import by.morunov.test.old_system.client.enums.ClientStatusEnum;
+import by.morunov.test.old_system.note.dto.ClientNoteDto;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -52,7 +53,7 @@ public class OldToNewConverter {
     }
 
 
-    public PatientProfile oldToNewPatient(OldClientDto oldClientDto) {
+    public PatientProfile oldToNewPatient(ClientDto oldClientDto) {
         PatientProfile patientProfile = new PatientProfile();
         patientProfile.setFirst_name(oldClientDto.getFirstName());
         patientProfile.setLast_name(oldClientDto.getLastName());
@@ -61,21 +62,21 @@ public class OldToNewConverter {
         return patientProfile;
     }
 
-    public List<PatientProfile> oldToNewAllPatient(List<OldClientDto> clientDtoList) {
+    public List<PatientProfile> oldToNewAllPatient(List<ClientDto> clientDtoList) {
         return clientDtoList.stream().map(this::oldToNewPatient).collect(Collectors.toList());
     }
 
-    public User oldToNewUser(OldClientNoteDto oldClientNoteDto) {
+    public User oldToNewUser(ClientNoteDto oldClientNoteDto) {
         User user = new User();
         user.setLogin(oldClientNoteDto.getLoggedUser());
         return user;
     }
 
-    public List<User> oldToNewUsers(List<OldClientNoteDto> noteDtoList) {
-        return noteDtoList.stream().filter(distinctByKey(OldClientNoteDto::getLoggedUser)).map(this::oldToNewUser).collect(Collectors.toList());
+    public List<User> oldToNewUsers(List<ClientNoteDto> noteDtoList) {
+        return noteDtoList.stream().filter(distinctByKey(ClientNoteDto::getLoggedUser)).map(this::oldToNewUser).collect(Collectors.toList());
     }
 
-    public Note oldToNewNote(OldClientNoteDto oldClientNoteDto) {
+    public Note oldToNewNote(ClientNoteDto oldClientNoteDto) {
         Note note = new Note();
         note.setNote(oldClientNoteDto.getComments());
         note.setOld_note_guid(oldClientNoteDto.getGuid());
@@ -87,7 +88,7 @@ public class OldToNewConverter {
         return note;
     }
 
-    public List<Note> oldToNewAllNote(List<OldClientNoteDto> oldClientNoteDtoList) {
+    public List<Note> oldToNewAllNote(List<ClientNoteDto> oldClientNoteDtoList) {
         return oldClientNoteDtoList.stream().map(this::oldToNewNote).collect(Collectors.toList());
     }
 

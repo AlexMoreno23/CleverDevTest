@@ -2,6 +2,7 @@ package by.morunov.test.new_system.entity;
 
 import lombok.*;
 import org.hibernate.Hibernate;
+import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -22,19 +23,29 @@ public class Note {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String old_note_guid;
+
     @Column(updatable = false)
     private LocalDateTime created_date_time;
+
     private LocalDateTime last_modified_date_time;
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+
+    @Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "created_user_id", updatable = false)
     private User created_by_user_id;
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+
+    @Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "update_user_id")
     private User last_modified_by_user_id;
+
     @Column(length = 4000)
     private String note;
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+
+    @Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "patient_profile_id", updatable = false)
     private PatientProfile patient_id;
 

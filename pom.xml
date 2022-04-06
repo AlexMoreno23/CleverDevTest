@@ -17,6 +17,7 @@
 		<java.version>11</java.version>
 		<jakarta_validation>2.0.2</jakarta_validation>
 		<jsr310>2.13.1</jsr310>
+		<spring_doc>1.6.5</spring_doc>
 
 	</properties>
 	<dependencies>
@@ -61,7 +62,15 @@
 			<artifactId>jackson-datatype-jsr310</artifactId>
 			<version>${jsr310}</version>
 		</dependency>
-
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-ui</artifactId>
+			<version>${spring_doc}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -69,23 +78,17 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<version>${project.parent.version}</version>
 				<configuration>
 					<excludes>
-						<exclude>	
+						<exclude>
 							<groupId>org.projectlombok</groupId>
 							<artifactId>lombok</artifactId>
 						</exclude>
 					</excludes>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>test</artifactId>
-				<configuration>
-					<source>11</source>
-					<target>11</target>
-				</configuration>
-			</plugin>
+
 		</plugins>
 	</build>
 

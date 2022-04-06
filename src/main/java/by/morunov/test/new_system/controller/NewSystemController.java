@@ -19,7 +19,7 @@ import java.util.List;
  * @author Alex Morunov
  */
 @RestController
-@RequestMapping
+@RequestMapping("/new-system")
 @AllArgsConstructor
 public class NewSystemController {
 

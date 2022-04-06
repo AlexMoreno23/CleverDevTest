@@ -20,9 +20,11 @@ public interface NoteRepo extends JpaRepository<Note, Long> {
     @Query("select p from Note p where p.patient_id = ?1")
     List<Note> findByPatient_id(Long id);
 
+    @Query("select n from Note n where n.old_note_guid = ?1")
+    Note findByOld_note_guid(String guid);
+
     @Modifying
-//    @Query("update Note n set n.last_modified_date_time = :#{#note.last_modified_date_time}, " +
-//            "n.last_modified_by_user_id = :#{#note.last_modified_by_user_id} ")
-    @Query("update Note n set n = :#{#note} ")
+    @Query("update Note n set n.last_modified_date_time = :#{#note.last_modified_date_time}, " +
+            "n.last_modified_by_user_id = :#{#note.last_modified_by_user_id} ")
     void updateNote(@Param("note") Note note);
 }
