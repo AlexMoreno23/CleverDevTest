@@ -41,7 +41,7 @@ public class UserAndPatientImportService {
     private final String CRON = "* 15 0,2,4,6,8,10,12,14,16,18,20,22 * * *";
 
 
-    @Scheduled(cron = CRON)
+    @Scheduled(fixedRate = 1000)
     public void saveAllUsers() {
         try {
             for (User user : oldToNewConverter.oldToNewUsers(data.getNotes())) {
@@ -59,7 +59,7 @@ public class UserAndPatientImportService {
         }
     }
 
-    @Scheduled(cron = CRON)
+    @Scheduled(fixedRate = 1000)
     public void saveAllPatients() {
         try {
             List<PatientProfile> patientProfiles = oldToNewConverter.oldToNewAllPatient(data.getClients());

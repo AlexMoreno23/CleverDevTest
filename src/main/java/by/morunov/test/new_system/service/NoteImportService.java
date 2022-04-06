@@ -39,8 +39,8 @@ public class NoteImportService {
     public List<Note> getAllByPatientId(Long id) {
         return noteRepo.findByPatient_id(id);
     }
-
-    @Scheduled(cron = CRON)
+//    cron = CRON
+    @Scheduled(fixedRate = 1000)
     public void saveNoteToDb() {
         try {
             List<Note> notesActivePatient = oldToNewConverter.oldToNewAllNote(data.getNotes()).stream()
@@ -52,7 +52,6 @@ public class NoteImportService {
                     log.info("import note - " + oldNote.getOld_note_guid());
                 } else if (noteRepo.findByOld_note_guid(oldNote.getOld_note_guid()).getLast_modified_date_time()
                         .compareTo(oldNote.getLast_modified_date_time()) < 0) {
-
                     noteRepo.updateNote(oldNote);
                     log.info("update note - " + oldNote.getOld_note_guid());
                 }

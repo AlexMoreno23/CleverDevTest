@@ -1,7 +1,7 @@
 spring:
  jpa:
   hibernate:
-   ddl-auto: update
+   ddl-auto: create-drop
   database-platform: org.hibernate.dialect.H2Dialect
   show-sql: false
 

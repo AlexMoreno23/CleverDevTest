@@ -25,6 +25,7 @@ public interface NoteRepo extends JpaRepository<Note, Long> {
 
     @Modifying
     @Query("update Note n set n.last_modified_date_time = :#{#note.last_modified_date_time}, " +
-            "n.last_modified_by_user_id = :#{#note.last_modified_by_user_id} ")
+            "n.last_modified_by_user_id = :#{#note.last_modified_by_user_id}," +
+            "n.note = :#{#note.note}")
     void updateNote(@Param("note") Note note);
 }
