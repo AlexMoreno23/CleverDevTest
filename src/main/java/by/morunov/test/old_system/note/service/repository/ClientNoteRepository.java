@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.List;
@@ -20,11 +21,14 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
 public class ClientNoteRepository {
     public static final String AGENCY_NOT_FOUND_MESSAGE_TEMPLATE = "Agency \"%s\" is not found";
+
+    private final Path path = Paths.get("src/main/resources/data/notes/");
 
     private final Map<String, List<ClientNoteDto>> notesByAgency = new ConcurrentHashMap<>();
 
@@ -51,19 +55,37 @@ public class ClientNoteRepository {
     }
 
 
+    public static List<Path> listFiles(Path path) throws IOException {
+
+        List<Path> result;
+        try (Stream<Path> walk = Files.walk(path)) {
+            result = walk.filter(Files::isRegularFile)
+                    .collect(Collectors.toList());
+        }
+
+        return result;
+
+    }
+
     @SneakyThrows
     public List<ClientNoteDto> getAllNotes() {
-
+        List<Path> paths = listFiles(path);
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        stream.write(Files.readAllBytes(Paths.get("src/main/resources/data/notes/v01/notes.json")));
-        stream.write(Files.readAllBytes(Paths.get("src/main/resources/data/notes/v02/notes.json")));
-        stream.write(Files.readAllBytes(Paths.get("src/main/resources/data/notes/v03/notes.json")));
-        stream.write(Files.readAllBytes(Paths.get("src/main/resources/data/notes/v04/notes.json")));
+        paths.forEach(p -> {
+            try {
+                stream.write(Files.readAllBytes(Paths.get(p.toString())));
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.findAndRegisterModules();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         return objectMapper.readValue(stream.toByteArray(), new TypeReference<List<ClientNoteDto>>() {
         });
+
     }
+
 
 }

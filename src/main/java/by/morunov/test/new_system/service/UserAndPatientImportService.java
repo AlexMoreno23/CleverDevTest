@@ -41,10 +41,11 @@ public class UserAndPatientImportService {
     private final String CRON = "* 15 0,2,4,6,8,10,12,14,16,18,20,22 * * *";
 
 
-    @Scheduled(fixedRate = 1000)
+    @Scheduled(cron = CRON)
     public void saveAllUsers() {
+        List<User> userListFromOldSystem = oldToNewConverter.oldToNewUsers(data.getNotes());
         try {
-            for (User user : oldToNewConverter.oldToNewUsers(data.getNotes())) {
+            for (User user : userListFromOldSystem) {
                 if (!userRepo.findAll().contains(user)) {
                     userRepo.save(user);
 
@@ -59,25 +60,26 @@ public class UserAndPatientImportService {
         }
     }
 
-    @Scheduled(fixedRate = 1000)
+    @Scheduled(cron = CRON)
     public void saveAllPatients() {
         try {
-            List<PatientProfile> patientProfiles = oldToNewConverter.oldToNewAllPatient(data.getClients());
-            for (PatientProfile oldProfile : patientProfiles) {
+            List<PatientProfile> patientProfilesFromOldSystem = oldToNewConverter.oldToNewAllPatient(data.getClients());
+            for (PatientProfile oldProfile : patientProfilesFromOldSystem) {
+
                 if (patientRepo.findPatientProfileByOld_client_guid(oldProfile.getOld_client_guid()) == null) {
-                    patientRepo.saveAll(patientProfiles);
+
+                    patientRepo.saveAll(patientProfilesFromOldSystem);
                     log.info("import all old patients");
+
                 } else {
                     log.warn("Patient exist ");
                 }
             }
 
-
         } catch (
                 ImportException e) {
             log.error("patient write error");
         }
-
     }
 
 

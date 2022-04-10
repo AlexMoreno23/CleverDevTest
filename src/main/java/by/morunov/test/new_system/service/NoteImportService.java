@@ -39,22 +39,27 @@ public class NoteImportService {
     public List<Note> getAllByPatientId(Long id) {
         return noteRepo.findByPatient_id(id);
     }
-//    cron = CRON
-    @Scheduled(fixedRate = 1000)
+
+    @Scheduled(cron = CRON)
     public void saveNoteToDb() {
         try {
             List<Note> notesActivePatient = oldToNewConverter.oldToNewAllNote(data.getNotes()).stream()
                     .filter(x -> (x.getPatient_id().getStatus_id() == 200))
                     .collect(Collectors.toList());
-            for (Note oldNote : notesActivePatient)
+
+            for (Note oldNote : notesActivePatient) {
                 if (noteRepo.findByOld_note_guid(oldNote.getOld_note_guid()) == null) {
+
                     noteRepo.save(oldNote);
                     log.info("import note - " + oldNote.getOld_note_guid());
+
                 } else if (noteRepo.findByOld_note_guid(oldNote.getOld_note_guid()).getLast_modified_date_time()
                         .compareTo(oldNote.getLast_modified_date_time()) < 0) {
+
                     noteRepo.updateNote(oldNote);
                     log.info("update note - " + oldNote.getOld_note_guid());
                 }
+            }
         } catch (ImportException e) {
             log.error("Write note error");
         }
